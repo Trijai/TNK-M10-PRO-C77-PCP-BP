@@ -110,6 +110,8 @@ feature = vgg_model.predict(image, verbose=0)
 
 # Use predict_caption(model, feature, tokenizer) to predict the caption and store it in caption variable
 
+caption = caption.replace('startseq ', '')
+caption = caption.replace('endseq', '')
 
 print(caption)
                     
