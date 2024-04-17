@@ -25,26 +25,27 @@ with open('captions.txt', 'r') as f:
     captions_doc = f.read()
 
 # Load the model
-
+model = keras.models.load_model('best_model.h5')
 
 # Create mapping of image to captions
-
+mapping = {}
 # Loop through every caption
-
+for line in tqdm(captions_doc.split('\n')):
     tokens = line.split(',')
     if len(line) < 2:
         continue
     # Take image_id and caption from token[0], [1] respectively
-    
+    image_id, caption = tokens[0], tokens[1:]
     # Remove extension from image ID i.e content after ".", i.e split the imagei_d from "." and keep the first part
-    
+    mage_id = image_id.split('.')[0]
     # Convert caption list to string
-    
+    caption = " ".join(caption)
     
     # Create list if image_id key is not in mapping
-    
+    if image_id not in mapping:
+        mapping[image_id] = []
     # Store the caption at image_id
-    
+    mapping[image_id].append(caption)
 
 print(mapping["1000268201_693b08cb0e"])
 
@@ -99,7 +100,7 @@ vgg_model = VGG16()
 vgg_model = Model(inputs=vgg_model.inputs, outputs=vgg_model.layers[-2].output)
 
 # Read the image 113.jpg
-
+img = cv2.imread('113.jpg')
         
 image = np.asarray(img)     
 image = img
@@ -109,7 +110,7 @@ image = preprocess_input(image)
 feature = vgg_model.predict(image, verbose=0)
 
 # Use predict_caption(model, feature, tokenizer) to predict the caption and store it in caption variable
-
+caption = predict_caption(model, feature, tokenizer)
 caption = caption.replace('startseq ', '')
 caption = caption.replace('endseq', '')
 
